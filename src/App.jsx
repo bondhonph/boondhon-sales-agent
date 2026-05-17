@@ -129,7 +129,7 @@ export default function BoondhonSalesAgent() {
         body: JSON.stringify({ system: SYSTEM_PROMPT, messages: history }),
       });
       const data = await res.json();
-      const reply = data.content?.find(b => b.type === "text")?.text || "দুঃখিত, একটু পরে আবার চেষ্টা করুন 😊";
+      const reply = data.choices?.[0]?.message?.content || data.content?.find(b => b.type === "text")?.text || "দুঃখিত, একটু পরে আবার চেষ্টা করুন 😊";
       const newMessages = [...updated, { role: "assistant", content: reply }];
       setNewMsgIndex(newMessages.length - 1);
       setMessages(newMessages);
