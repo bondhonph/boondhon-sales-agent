@@ -6,31 +6,26 @@ export default async function handler(req, res) {
   try {
     const { messages, system } = req.body;
 
-    const contents = messages.map(m => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }]
-    }));
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: system }] },
-          contents,
-          generationConfig: { maxOutputTokens: 1000, temperature: 0.9 }
-        }),
-      }
-    );
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        'HTTP-Referer': 'https://boondhon-sales-agent.vercel.app',
+        'X-Title': 'BOONDHON Sales Agent',
+      },
+      body: JSON.stringify({
+        model: 'meta-llama/llama-3.1-8b-instruct:free',
+        messages: [
+          { role: 'system', content: system },
+          ...messages
+        ],
+        max_tokens: 1000,
+      }),
+    });
 
     const data = await response.json();
-    console.log('Gemini response:', JSON.stringify(data));
-    
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text 
-      || data?.candidates?.[0]?.output
-      || 'দুঃখিত, একটু পরে আবার চেষ্টা করুন 😊';
-    
+    const text = data.choices?.[0]?.message?.content || 'দুঃখিত, একটু পরে আবার চেষ্টা করুন 😊';
     res.status(200).json({ content: [{ type: 'text', text }] });
   } catch (err) {
     console.error('Error:', err);
