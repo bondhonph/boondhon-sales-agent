@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    const text = data.choices?.[0]?.message?.content || 'দুঃখিত, একটু পরে আবার চেষ্টা করুন 😊';
+    const text = data.choices?.[0]?.message?.content || 'baal 😊';
     res.status(200).json({ content: [{ type: 'text', text }] });
   } catch (err) {
     console.error('Error:', err);
