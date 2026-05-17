@@ -23,7 +23,7 @@ export default async function handler(req, res) {
         'X-Title': 'BOONDHON Sales Agent',
       },
       body: JSON.stringify({
-        model: 'mistralai/mistral-7b-instruct:free',
+        model: 'deepseek/deepseek-chat',
         messages: allMessages,
         max_tokens: 800,
       }),
